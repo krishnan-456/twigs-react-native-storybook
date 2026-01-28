@@ -193,7 +193,7 @@ npm run type-check     # Run TypeScript type checking
 ## Configuration Files
 
 - **app.json**: Expo app configuration
-- **metro.config.js**: Metro bundler with Storybook integration
+- **metro.config.js**: Metro bundler configuration (Expo default)
 - **tsconfig.json**: TypeScript compiler options
 - **eslint.config.js**: Linting rules
 - **package.json**: Dependencies and scripts
