@@ -14,6 +14,7 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "type-check": "tsc --noEmit",
     "storybook:update": "sb-rn-get-stories --config-path .rnstorybook",
+    "postinstall": "npm run storybook:update",
     "prepare": "husky"
   },
   "dependencies": {

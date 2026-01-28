@@ -41,7 +41,8 @@ yarn-error.*
 app-example
 
 # Storybook auto-generated files
-.rnstorybook/storybook.requires.ts
+# Note: Commented out for CodeSandbox compatibility
+# .rnstorybook/storybook.requires.ts
 
 # Android build outputs
 android/app/build/

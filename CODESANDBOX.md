@@ -60,7 +60,17 @@ This generates `.rnstorybook/storybook.requires.ts` which imports all stories.
 
 ## 🚀 Running in CodeSandbox
 
-### **Option 1: Web Preview (Expo Web)**
+### **Important: First Time Setup**
+
+When you first open the project in CodeSandbox, the Storybook index needs to be generated:
+
+```bash
+npm install  # This automatically runs npm run storybook:update
+```
+
+The `postinstall` script generates `.rnstorybook/storybook.requires.ts` which is required for Storybook to work.
+
+### **Option 1: Web Preview (Expo Web)** ⭐ Recommended
 
 ```bash
 npm run web
@@ -69,6 +79,7 @@ npm run web
 - Opens in browser
 - Full Storybook functionality
 - No device/emulator needed
+- Works immediately in CodeSandbox
 
 ### **Option 2: Device Preview (Expo Go)**
 
@@ -94,15 +105,19 @@ npx expo start --tunnel
 
 ## 🔧 Troubleshooting
 
-### **Error: Cannot find module 'storybook'**
+### **Error: Cannot find module './storybook.requires'**
 
-**Cause:** Missing `storybook.requires.ts`
+**Cause:** Missing `storybook.requires.ts` (auto-generated file)
 
 **Fix:**
 
 ```bash
 npm run storybook:update
+# OR
+npm install  # Runs postinstall which generates it
 ```
+
+This file is now **committed to git** so CodeSandbox has it immediately.
 
 ### **Error: ERR_REQUIRE_ESM**
 
