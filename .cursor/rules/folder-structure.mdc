@@ -1,0 +1,149 @@
+# Folder Structure Rules
+
+## Project Structure
+
+```
+twigs-react-native-storybook/
+├── .cursor/
+│   └── rules/              # Cursor AI rules
+├── .rnstorybook/           # Storybook configuration
+│   ├── index.tsx           # Storybook entry point
+│   ├── main.ts             # Stories glob and addons config
+│   ├── preview.tsx         # Global decorators and theme
+│   └── storybook.requires.ts  # Auto-generated, in .gitignore
+├── app/                    # Expo Router pages
+│   ├── _layout.tsx         # Root layout with providers
+│   └── index.tsx           # Home screen with Storybook toggle
+├── assets/                 # Static assets (images, fonts)
+├── lib/                    # Shared utilities and contexts
+│   └── StorybookContext.tsx
+├── src/
+│   ├── stories/            # Storybook stories (*.stories.tsx)
+│   │   ├── Avatar.stories.tsx
+│   │   ├── Box.stories.tsx
+│   │   ├── BottomSheet.stories.tsx
+│   │   ├── BottomSheetModal.stories.tsx
+│   │   ├── Button.stories.tsx
+│   │   ├── Checkbox.stories.tsx
+│   │   ├── Flex.stories.tsx
+│   │   ├── Radio.stories.tsx
+│   │   ├── Switch.stories.tsx
+│   │   ├── Text.stories.tsx
+│   │   └── TextInput.stories.tsx
+│   ├── hooks/              # Custom React hooks
+│   ├── types/              # TypeScript type definitions
+│   └── utils/              # Utility functions
+├── metro.config.js         # Metro bundler config
+├── package.json
+├── tsconfig.json
+└── README.md
+```
+
+## Directory Guidelines
+
+### `.rnstorybook/`
+- Storybook configuration only
+- `storybook.requires.ts` is auto-generated - add to `.gitignore`
+- Don't modify unless changing global Storybook settings
+
+### `app/`
+- Expo Router pages (file-based routing)
+- Files here become routes automatically
+- `_layout.tsx` is the root wrapper
+- Keep application screens here, not component demos
+
+### `lib/`
+- Shared code used across the app
+- Contexts (e.g., `StorybookContext.tsx`)
+- Configuration files
+- Global utilities that don't fit in `src/utils`
+
+### `src/stories/`
+- All Storybook stories for components
+- One file per component: `ComponentName.stories.tsx`
+- Stories showcase `testing-twigs` components
+- After changes, run: `npm run storybook:update`
+
+### `src/hooks/`
+- Custom React hooks
+- Naming: `useHookName.ts`
+- Example: `useAuth.ts`, `useTheme.ts`
+
+### `src/types/`
+- TypeScript interfaces and types
+- Shared type definitions
+- Example: `User.types.ts`, `API.types.ts`
+
+### `src/utils/`
+- Pure utility functions
+- No React-specific code
+- Example: `formatDate.ts`, `validators.ts`
+
+## File Naming Conventions
+
+| Type | Convention | Example |
+|------|-----------|---------|
+| Components | PascalCase | `UserProfile.tsx` |
+| Hooks | camelCase with `use` | `useAuth.ts` |
+| Utils | camelCase | `formatDate.ts` |
+| Types | PascalCase | `User.types.ts` |
+| Stories | PascalCase + `.stories.tsx` | `Button.stories.tsx` |
+| Contexts | PascalCase + `Context` | `ThemeContext.tsx` |
+| Screens (app/) | camelCase | `index.tsx`, `profile.tsx` |
+
+## Import Path Aliases
+
+Configure in `tsconfig.json`:
+
+```json
+{
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./"]
+    }
+  }
+}
+```
+
+Usage:
+```typescript
+import { useAuth } from '@/src/hooks/useAuth';
+import { UserType } from '@/src/types/User.types';
+import { formatDate } from '@/src/utils/formatDate';
+import { StorybookContext } from '@/lib/StorybookContext';
+```
+
+## What Goes Where
+
+### `app/` vs `src/`
+- **app/**: Actual application screens and navigation
+- **src/**: Reusable code, stories, utilities
+
+### `lib/` vs `src/utils/`
+- **lib/**: App-level shared code (contexts, configs)
+- **src/utils/**: Pure utility functions
+
+### When to create subdirectories
+- Create subdirectories when you have 5+ related files
+- Example: `src/hooks/auth/useLogin.ts`, `src/hooks/auth/useLogout.ts`
+- Keep flat structure when possible for easier navigation
+
+## Files to Gitignore
+
+```
+.rnstorybook/storybook.requires.ts
+node_modules/
+.expo/
+dist/
+*.log
+.DS_Store
+```
+
+## Best Practices
+
+1. **Keep stories in `src/stories/`**: All Storybook files in one place
+2. **Use path aliases**: Import with `@/` instead of relative paths
+3. **One story per component**: Don't combine multiple components in one story file
+4. **Organize by feature**: When app grows, create feature folders in `src/`
+5. **Co-locate tests**: Keep test files next to the code they test
+6. **Avoid deeply nested folders**: Max 3 levels deep for readability

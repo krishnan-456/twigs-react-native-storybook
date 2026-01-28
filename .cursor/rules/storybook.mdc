@@ -1,0 +1,154 @@
+# Storybook for React Native Rules
+
+## Story File Structure
+
+Stories must be placed in `src/stories/` directory with `.stories.tsx` extension.
+
+```typescript
+import type { Meta, StoryObj } from '@storybook/react-native';
+import React from 'react';
+import { StyleSheet } from 'react-native';
+import { ComponentName, Flex } from 'testing-twigs';
+
+const ComponentMeta: Meta<typeof ComponentName> = {
+  title: 'Components/ComponentName',
+  component: ComponentName,
+  argTypes: {
+    // Define interactive controls here
+    propName: {
+      control: { type: 'select' },
+      options: ['option1', 'option2'],
+    },
+  },
+  args: {
+    // Default prop values
+  },
+};
+
+export default ComponentMeta;
+
+type Story = StoryObj<typeof ComponentName>;
+
+export const Default: Story = {
+  args: {
+    // Props for this story
+  },
+};
+```
+
+## Story Naming
+
+- Export default meta as `ComponentNameMeta`
+- Story names should be descriptive: `Default`, `Variants`, `Sizes`, `States`
+- Keep stories minimal and focused on specific use cases
+
+## Controls Configuration
+
+```typescript
+argTypes: {
+  // Select dropdown
+  variant: {
+    control: { type: 'select' },
+    options: ['solid', 'outline', 'ghost'],
+  },
+  
+  // Boolean toggle
+  disabled: {
+    control: { type: 'boolean' },
+  },
+  
+  // Number input
+  size: {
+    control: { type: 'number', min: 10, max: 48, step: 2 },
+  },
+  
+  // Color picker
+  color: {
+    control: { type: 'color' },
+  },
+}
+```
+
+## Global Decorators
+
+Global configuration is in `.rnstorybook/preview.tsx`:
+- DM Sans fonts are loaded globally
+- `TwigsProvider` wraps all stories with theme
+- `BottomSheetModalProvider` and `GestureHandlerRootView` are configured
+- No need to add these in individual stories
+
+## Story Best Practices
+
+### DO:
+- ✅ Use minimal, focused examples
+- ✅ Show different states/variants in separate stories
+- ✅ Use `useState` for interactive examples (forms, toggles)
+- ✅ Use `Flex` from `testing-twigs` for layout
+- ✅ Add styles with `StyleSheet.create()` at bottom of file
+- ✅ Keep stories simple and easy to understand
+
+### DON'T:
+- ❌ Don't duplicate theme/font setup (handled globally)
+- ❌ Don't create overly complex stories with too much logic
+- ❌ Don't add redundant stories showing same functionality
+- ❌ Don't use `View` or `Text` from react-native (use `testing-twigs`)
+- ❌ Don't add controls for props that aren't commonly changed
+
+## Render Functions
+
+For stories with state or multiple examples:
+
+```typescript
+export const Interactive: Story = {
+  render: () => {
+    const [value, setValue] = useState('');
+    
+    return (
+      <ComponentName 
+        value={value} 
+        onChange={setValue} 
+      />
+    );
+  },
+};
+
+export const Variants: Story = {
+  render: () => (
+    <Flex style={styles.showcase}>
+      <ComponentName variant="solid" />
+      <ComponentName variant="outline" />
+      <ComponentName variant="ghost" />
+    </Flex>
+  ),
+};
+```
+
+## Showcase Styling
+
+```typescript
+const styles = StyleSheet.create({
+  showcase: {
+    gap: 16, // Space between examples
+  },
+});
+```
+
+## After Creating/Updating Stories
+
+Always regenerate the story index:
+```bash
+npm run storybook:update
+```
+
+## Component Coverage
+
+Current components with stories:
+- Layout: Flex, Box
+- Forms: Button, TextInput, Checkbox, Radio, Switch
+- Display: Text, Avatar
+- Modals: BottomSheet, BottomSheetModal
+
+## Addons Configuration
+
+Only `@storybook/addon-ondevice-controls` is enabled in `.rnstorybook/main.ts`.
+Actions and Notes addons are removed for simplicity.

@@ -1,0 +1,267 @@
+# Linting and Code Quality Rules
+
+## ESLint Configuration
+
+This project uses modern ESLint flat config with:
+- **@typescript-eslint**: TypeScript-specific rules
+- **eslint-plugin-react**: React best practices
+- **eslint-plugin-react-hooks**: Hooks rules
+- **eslint-plugin-react-native**: React Native specific rules
+- **eslint-plugin-prettier**: Code formatting
+- **eslint-config-prettier**: Disables conflicting ESLint rules
+
+## Key Rules
+
+### TypeScript Rules
+
+```typescript
+// ✅ Good - Type imports
+import type { Meta, StoryObj } from '@storybook/react-native';
+import { Button } from 'testing-twigs';
+
+// ❌ Bad - Missing type keyword
+import { Meta, StoryObj } from '@storybook/react-native';
+
+// ✅ Good - Unused vars with underscore
+const _unusedVar = 'ok';
+function handleClick(_event: Event) { }
+
+// ⚠️ Warn - Using any
+const data: any = fetchData(); // Should be typed
+
+// ✅ Good - Const for non-reassigned variables
+const config = { api: 'url' };
+
+// ❌ Bad - Let for non-reassigned
+let config = { api: 'url' };
+```
+
+### React Rules
+
+```typescript
+// ✅ Good - Self-closing components
+<Button />
+<Flex />
+
+// ❌ Bad - Unnecessary closing tag
+<Button></Button>
+
+// ✅ Good - No curly braces for string props
+<Button title="Click me" />
+
+// ❌ Bad - Unnecessary braces
+<Button title={'Click me'} />
+
+// ✅ Good - Boolean props shorthand
+<Button disabled />
+
+// ❌ Bad - Explicit true
+<Button disabled={true} />
+```
+
+### React Native Rules
+
+```typescript
+// ⚠️ Warn - Inline styles (prefer StyleSheet)
+<Flex style={{ padding: 16 }} /> // Use StyleSheet.create()
+
+// ✅ Good - StyleSheet
+const styles = StyleSheet.create({
+  container: { padding: 16 },
+});
+<Flex style={styles.container} />
+
+// ❌ Error - Unused styles
+const styles = StyleSheet.create({
+  unused: { color: 'red' }, // Will error
+});
+```
+
+### Import Rules
+
+```typescript
+// ✅ Good - No duplicate imports
+import { useState, useEffect } from 'react';
+
+// ❌ Bad - Duplicate imports
+import { useState } from 'react';
+import { useEffect } from 'react';
+
+// ✅ Good - Consistent type imports
+import type { FC } from 'react';
+import type { ViewStyle } from 'react-native';
+```
+
+### General Rules
+
+```typescript
+// ⚠️ Warn - Console.log (use console.warn/error)
+console.log('Debug'); // Warn in production
+
+// ✅ Good - Allowed console
+console.warn('Warning message');
+console.error('Error message');
+
+// ✅ Good - Template literals
+const message = `Hello ${name}`;
+
+// ❌ Bad - String concatenation
+const message = 'Hello ' + name;
+
+// ✅ Good - Arrow functions
+const double = (x) => x * 2;
+
+// ❌ Bad - Function expression
+const double = function(x) { return x * 2; };
+```
+
+## Story Files - Relaxed Rules
+
+Story files (*.stories.tsx) have relaxed rules:
+- Hooks in render functions allowed
+- `any` type allowed for flexibility
+
+## Scripts
+
+```bash
+# Lint all files
+npm run lint
+
+# Lint and auto-fix
+npm run lint:fix
+
+# Format all files
+npm run format
+
+# Check formatting
+npm run format:check
+
+# Type check
+npm run type-check
+```
+
+## Prettier Configuration
+
+```json
+{
+  "singleQuote": true,
+  "trailingComma": "es5",
+  "printWidth": 100,
+  "tabWidth": 2,
+  "semi": true,
+  "bracketSpacing": true,
+  "arrowParens": "always",
+  "endOfLine": "lf"
+}
+```
+
+## Auto-formatting in VSCode/Cursor
+
+Add to `.vscode/settings.json`:
+
+```json
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ]
+}
+```
+
+## Disabling Rules
+
+### File level
+```typescript
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// File content
+```
+
+### Line level
+```typescript
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const data: any = fetchData();
+```
+
+### Block level
+```typescript
+/* eslint-disable react-native/no-inline-styles */
+<Flex style={{ padding: 16 }} />
+/* eslint-enable react-native/no-inline-styles */
+```
+
+## Common Issues and Fixes
+
+### Issue: Unused imports
+```typescript
+// ❌ Error
+import { View } from 'react-native'; // Unused
+
+// ✅ Fix - Remove unused import
+```
+
+### Issue: Missing dependencies in useEffect
+```typescript
+// ⚠️ Warn
+useEffect(() => {
+  fetchData(userId);
+}, []); // Missing userId dependency
+
+// ✅ Fix
+useEffect(() => {
+  fetchData(userId);
+}, [userId]);
+```
+
+### Issue: Any type
+```typescript
+// ⚠️ Warn
+const data: any = response;
+
+// ✅ Fix - Add proper type
+interface Response {
+  id: string;
+  name: string;
+}
+const data: Response = response;
+```
+
+## Ignored Files
+
+ESLint ignores:
+- `node_modules/`
+- `.expo/`
+- `dist/`
+- `android/build/`
+- `ios/build/`
+- `.rnstorybook/storybook.requires.ts`
+- `metro.config.js`
+
+## Best Practices
+
+1. **Always run linter before commit** (automatic via Husky)
+2. **Fix warnings regularly** - Don't accumulate technical debt
+3. **Use type inference** - Let TypeScript infer types when obvious
+4. **Prefer const over let** - Immutability by default
+5. **Use StyleSheet.create()** - Avoid inline styles
+6. **Keep components small** - If linter complains about complexity, refactor
+7. **Document complex logic** - ESLint won't catch unclear code
+
+## Integration with Git Hooks
+
+### Pre-commit (via lint-staged)
+- Automatically lints and formats staged files
+- Runs `eslint --fix` and `prettier --write`
+- Regenerates Storybook index if story files changed
+
+### Pre-push
+- Runs full type check (`tsc --noEmit`)
+- Runs full lint (`npm run lint`)
+
+If checks fail, commit/push is blocked until issues are resolved.

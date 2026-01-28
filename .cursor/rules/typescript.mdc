@@ -1,0 +1,279 @@
+# TypeScript Rules
+
+## Type Safety
+
+- Always use TypeScript for all `.ts` and `.tsx` files
+- Avoid `any` type; use `unknown` if type is uncertain
+- Enable strict mode in `tsconfig.json`
+- Use type inference when possible
+
+## Component Props
+
+Define props with interfaces:
+
+```typescript
+interface ButtonProps {
+  title: string;
+  onPress: () => void;
+  disabled?: boolean;
+  variant?: 'solid' | 'outline' | 'ghost';
+}
+
+export function Button({ title, onPress, disabled = false, variant = 'solid' }: ButtonProps) {
+  // Component implementation
+}
+```
+
+## Exporting Types
+
+Export types for reuse:
+
+```typescript
+// components/Button.tsx
+export interface ButtonProps {
+  title: string;
+  onPress: () => void;
+}
+
+// other-file.tsx
+import type { ButtonProps } from './components/Button';
+```
+
+## Type Definitions for Stories
+
+```typescript
+import type { Meta, StoryObj } from '@storybook/react-native';
+
+const meta: Meta<typeof Component> = {
+  title: 'Components/Component',
+  component: Component,
+};
+
+export default meta;
+
+type Story = StoryObj<typeof Component>;
+
+export const Default: Story = {
+  args: {
+    // typed args
+  },
+};
+```
+
+## React Types
+
+```typescript
+import type { ReactNode, ReactElement } from 'react';
+import type { ViewStyle, TextStyle, ImageStyle } from 'react-native';
+
+interface ContainerProps {
+  children: ReactNode;          // Can be any renderable content
+  style?: ViewStyle;             // React Native view styles
+}
+
+interface IconProps {
+  icon: ReactElement;            // Must be a single React element
+}
+```
+
+## Hooks Types
+
+```typescript
+import { useState, useEffect } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
+
+function useCounter(initialValue: number): [number, () => void, () => void] {
+  const [count, setCount] = useState(initialValue);
+  
+  const increment = () => setCount(c => c + 1);
+  const decrement = () => setCount(c => c - 1);
+  
+  return [count, increment, decrement];
+}
+```
+
+## Context Types
+
+```typescript
+import { createContext, useContext } from 'react';
+import type { ReactNode } from 'react';
+
+interface ThemeContextValue {
+  theme: 'light' | 'dark';
+  toggleTheme: () => void;
+}
+
+const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
+
+interface ThemeProviderProps {
+  children: ReactNode;
+}
+
+export function ThemeProvider({ children }: ThemeProviderProps) {
+  // Implementation
+}
+
+export function useTheme(): ThemeContextValue {
+  const context = useContext(ThemeContext);
+  if (!context) {
+    throw new Error('useTheme must be used within ThemeProvider');
+  }
+  return context;
+}
+```
+
+## Utility Types
+
+```typescript
+// Partial - make all properties optional
+type PartialUser = Partial<User>;
+
+// Pick - select specific properties
+type UserCredentials = Pick<User, 'email' | 'password'>;
+
+// Omit - exclude specific properties
+type UserWithoutPassword = Omit<User, 'password'>;
+
+// Required - make all properties required
+type RequiredUser = Required<User>;
+
+// Record - object with specific key-value types
+type UserRoles = Record<string, 'admin' | 'user' | 'guest'>;
+```
+
+## Async/Await Types
+
+```typescript
+async function fetchUser(id: string): Promise<User> {
+  const response = await fetch(`/api/users/${id}`);
+  const data: User = await response.json();
+  return data;
+}
+
+// With error handling
+async function fetchUserSafe(id: string): Promise<User | null> {
+  try {
+    const user = await fetchUser(id);
+    return user;
+  } catch (error) {
+    console.error('Failed to fetch user:', error);
+    return null;
+  }
+}
+```
+
+## Generic Types
+
+```typescript
+interface ApiResponse<T> {
+  data: T;
+  error?: string;
+  loading: boolean;
+}
+
+function useApi<T>(url: string): ApiResponse<T> {
+  const [data, setData] = useState<T | null>(null);
+  const [error, setError] = useState<string>();
+  const [loading, setLoading] = useState(true);
+  
+  // Implementation
+  
+  return { data: data!, error, loading };
+}
+
+// Usage
+const { data, error, loading } = useApi<User[]>('/api/users');
+```
+
+## Type Guards
+
+```typescript
+function isUser(value: unknown): value is User {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'id' in value &&
+    'email' in value
+  );
+}
+
+// Usage
+if (isUser(data)) {
+  // TypeScript knows data is User here
+  console.log(data.email);
+}
+```
+
+## Enums vs Union Types
+
+Prefer union types over enums:
+
+```typescript
+// ✅ Preferred
+type ButtonVariant = 'solid' | 'outline' | 'ghost';
+
+// ❌ Avoid
+enum ButtonVariant {
+  Solid = 'solid',
+  Outline = 'outline',
+  Ghost = 'ghost',
+}
+```
+
+## Type Assertions
+
+Use type assertions sparingly:
+
+```typescript
+// When you know more than TypeScript
+const element = document.getElementById('root') as HTMLDivElement;
+
+// Non-null assertion (use carefully)
+const value = possiblyNull!;
+
+// Prefer type guards instead
+if (possiblyNull !== null) {
+  const value = possiblyNull; // TypeScript knows it's not null
+}
+```
+
+## tsconfig.json Settings
+
+```json
+{
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "jsx": "react-native"
+  }
+}
+```
+
+## Common Mistakes to Avoid
+
+```typescript
+// ❌ Don't use any
+function process(data: any) { }
+
+// ✅ Use unknown or specific type
+function process(data: unknown) { }
+
+// ❌ Don't ignore errors with @ts-ignore
+// @ts-ignore
+const value = obj.property;
+
+// ✅ Fix the type issue or use proper assertion
+const value = obj.property as string;
+
+// ❌ Don't use Function type
+type Callback = Function;
+
+// ✅ Use specific function signature
+type Callback = (value: string) => void;
+```

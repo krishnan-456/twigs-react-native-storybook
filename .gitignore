@@ -7,7 +7,6 @@ node_modules/
 .expo/
 dist/
 web-build/
-expo-env.d.ts
 
 # Native
 .kotlin/
@@ -36,8 +35,25 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+# ESLint cache
+.eslintcache
+
 app-example
 
-# generated native folders
-/ios
-/android
+# Storybook auto-generated files
+.rnstorybook/storybook.requires.ts
+
+# Android build outputs
+android/app/build/
+android/build/
+android/.gradle/
+android/.cxx/
+android/app/.cxx/
+android/local.properties
+
+# iOS build outputs
+ios/Pods/
+ios/build/
+ios/*.xcworkspace/xcuserdata/
+ios/*.xcodeproj/xcuserdata/
+ios/*.xcodeproj/project.xcworkspace/xcuserdata/

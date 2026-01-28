@@ -1,0 +1,249 @@
+# Cursor Rules for Twigs React Native Storybook
+
+You are an expert React Native and Storybook developer working on an Expo project with the testing-twigs component library.
+
+## Tech Stack
+
+- **Framework**: React Native with Expo
+- **Router**: Expo Router (file-based routing)
+- **UI Library**: testing-twigs
+- **Fonts**: DM Sans (6 variants via @expo-google-fonts/dm-sans)
+- **Storybook**: @storybook/react-native v10+ (on-device)
+- **Language**: TypeScript
+- **Styling**: StyleSheet.create() + testing-twigs css prop
+
+## Key Commands
+
+```bash
+npm start                    # Start Expo dev server
+npm run storybook:update     # Regenerate story index (after adding/removing stories)
+```
+
+## Component Library: testing-twigs
+
+Always use testing-twigs components instead of raw React Native components:
+
+### Layout
+- `<Flex />` - flexbox container (direction, justify, align, wrap, gap)
+- `<Box />` - container with padding/margin utilities
+
+### Typography
+- `<Text />` - text with fontSize, fontFamily, color props
+
+### Forms
+- `<Button />` - button with size, color, variant props
+- `<TextInput />` - input with size, variant, icons props
+- `<Checkbox />` - checkbox with size, checked, onChange
+- `<Radio />` - radio with size, selected, onSelect
+- `<Switch />` - switch with value, onValueChange
+
+### Display
+- `<Avatar />` - avatar with name, rounded, width, height
+
+### Modals
+- `<BottomSheet />` - persistent bottom sheet
+- `<BottomSheetModal />` - modal with backdrop
+- `<BottomSheetView />` - content wrapper for bottom sheets
+
+### Providers
+- `<TwigsProvider theme={theme}>` - theme provider (required at root)
+- `<BottomSheetModalProvider>` - required for BottomSheetModal
+
+## Folder Structure
+
+```
+app/                    # Expo Router screens
+lib/                    # Shared contexts and configs
+src/
+  stories/              # All Storybook stories (*.stories.tsx)
+  hooks/                # Custom React hooks
+  types/                # TypeScript types
+  utils/                # Utility functions
+.rnstorybook/           # Storybook configuration
+.cursor/rules/          # Detailed AI coding rules
+```
+
+## Storybook Stories
+
+Location: `src/stories/*.stories.tsx`
+
+Template:
+```typescript
+import type { Meta, StoryObj } from '@storybook/react-native';
+import React from 'react';
+import { StyleSheet } from 'react-native';
+import { ComponentName, Flex } from 'testing-twigs';
+
+const meta: Meta<typeof ComponentName> = {
+  title: 'Components/ComponentName',
+  component: ComponentName,
+  argTypes: {
+    variant: {
+      control: { type: 'select' },
+      options: ['solid', 'outline'],
+    },
+  },
+};
+
+export default meta;
+type Story = StoryObj<typeof ComponentName>;
+
+export const Default: Story = {
+  args: { variant: 'solid' },
+};
+
+export const Variants: Story = {
+  render: () => (
+    <Flex style={styles.showcase}>
+      <ComponentName variant="solid" />
+      <ComponentName variant="outline" />
+    </Flex>
+  ),
+};
+
+const styles = StyleSheet.create({
+  showcase: { gap: 16 },
+});
+```
+
+After creating/modifying stories, run: `npm run storybook:update`
+
+## Font Usage
+
+DM Sans fonts are loaded globally. Use fontFamily instead of fontWeight:
+
+```typescript
+<Text fontFamily="DMSans_400Regular">Regular</Text>
+<Text fontFamily="DMSans_400Regular_Italic">Regular Italic</Text>
+<Text fontFamily="DMSans_500Medium">Medium</Text>
+<Text fontFamily="DMSans_500Medium_Italic">Medium Italic</Text>
+<Text fontFamily="DMSans_700Bold">Bold</Text>
+<Text fontFamily="DMSans_700Bold_Italic">Bold Italic</Text>
+```
+
+## Theme Configuration
+
+Theme is configured globally in `app/_layout.tsx` and `.rnstorybook/preview.tsx`. Don't duplicate in stories.
+
+```typescript
+import { TwigsProvider, defaultTheme } from 'testing-twigs';
+
+const theme = {
+  ...defaultTheme,
+  fonts: {
+    ...defaultTheme.fonts,
+    regular: 'DMSans_400Regular',
+    regularItalic: 'DMSans_400Regular_Italic',
+    medium: 'DMSans_500Medium',
+    mediumItalic: 'DMSans_500Medium_Italic',
+    bold: 'DMSans_700Bold',
+    boldItalic: 'DMSans_700Bold_Italic',
+  },
+};
+```
+
+## Import Guidelines
+
+Use path alias `@/` for cleaner imports:
+
+```typescript
+// ✅ Good
+import { useAuth } from '@/src/hooks/useAuth';
+import { UserType } from '@/src/types/User.types';
+import { StorybookContext } from '@/lib/StorybookContext';
+
+// ❌ Avoid
+import { useAuth } from '../../../src/hooks/useAuth';
+```
+
+Import order:
+1. React/React Native
+2. Third-party (testing-twigs, etc.)
+3. Local imports with @/ alias
+
+## Styling Best Practices
+
+1. Use `testing-twigs` components over React Native primitives
+2. Use `StyleSheet.create()` for styles at bottom of file
+3. Use `css` prop from testing-twigs for inline styles: `css={{ backgroundColor: '#fff' }}`
+4. Use theme-aware props: `padding`, `margin`, `color`
+5. Platform-specific styles with `Platform.select()`
+
+## TypeScript
+
+- Always use TypeScript for `.ts` and `.tsx` files
+- Define prop interfaces for all components
+- Use `type` for unions: `type Variant = 'solid' | 'outline'`
+- Avoid `any`; use `unknown` if uncertain
+- Export types for reuse: `export interface ButtonProps { ... }`
+
+## File Naming
+
+- Components: PascalCase (`UserProfile.tsx`)
+- Hooks: camelCase with `use` prefix (`useAuth.ts`)
+- Utils: camelCase (`formatDate.ts`)
+- Types: PascalCase with `.types.ts` (`User.types.ts`)
+- Stories: PascalCase with `.stories.tsx` (`Button.stories.tsx`)
+
+## Do's and Don'ts
+
+### ✅ DO:
+- Use testing-twigs components (Flex, Box, Text, Button, etc.)
+- Use DM Sans fontFamily instead of fontWeight
+- Run `npm run storybook:update` after story changes
+- Keep stories in `src/stories/` directory
+- Use TypeScript strict mode
+- Use path aliases `@/`
+- Write minimal, focused stories
+- Use StyleSheet.create() for styles
+
+### ❌ DON'T:
+- Use raw React Native components when testing-twigs equivalent exists
+- Use View, Text from 'react-native' (use testing-twigs)
+- Use fontWeight prop (use fontFamily with DM Sans variants)
+- Forget to regenerate story index after changes
+- Use `any` type
+- Add TwigsProvider in stories (it's global)
+- Create overly complex stories
+- Mix inline and StyleSheet styles
+
+## Storybook Configuration
+
+- **Addons**: Only `@storybook/addon-ondevice-controls` is enabled
+- **Stories Path**: `src/stories/**/*.stories.@(ts|tsx|js|jsx)`
+- **Global Decorators**: Fonts, TwigsProvider, BottomSheetModalProvider (in preview.tsx)
+- **Auto-generated**: `.rnstorybook/storybook.requires.ts` (gitignored)
+
+## Development Workflow
+
+1. Make changes to code or stories
+2. If stories added/removed: `npm run storybook:update`
+3. App auto-reloads via Metro bundler
+4. Open Storybook via "📚 Open Storybook" button in app
+5. Test component variants using Controls addon
+
+## Platform Support
+
+- iOS simulator
+- Android emulator  
+- Physical devices via Expo Go (development builds recommended)
+
+## Additional Resources
+
+- Project documentation: `README.md`
+- Folder structure: `PROJECT_STRUCTURE.md`
+- Detailed rules: `.cursor/rules/*.mdc` files
+- testing-twigs: https://www.npmjs.com/package/testing-twigs
+
+## Cursor Rules Files
+
+- `.cursor/rules/react-native.mdc` - React Native patterns
+- `.cursor/rules/storybook.mdc` - Storybook guidelines
+- `.cursor/rules/testing-twigs.mdc` - Component library reference
+- `.cursor/rules/typescript.mdc` - TypeScript best practices
+- `.cursor/rules/folder-structure.mdc` - Project organization
+- `.cursor/rules/linting.mdc` - ESLint and code quality rules
+
+---
+
+When asked to create components or stories, follow these rules strictly. Refer to detailed rule files in `.cursor/rules/` for specific guidance on React Native, Storybook, TypeScript, testing-twigs usage, and folder structure.
