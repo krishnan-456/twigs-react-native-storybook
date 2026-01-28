@@ -33,7 +33,22 @@ if (__DEV__ && showStorybook && StorybookUIRoot) {
 
 **Why?** This avoids module system conflicts and works everywhere.
 
-### **3. Story Discovery**
+### **3. Platform-Aware Storage**
+
+AsyncStorage is conditionally loaded in `.rnstorybook/index.tsx`:
+
+```typescript
+// Only load AsyncStorage on native platforms (not web)
+let storage;
+if (Platform.OS !== 'web') {
+  const AsyncStorage = require('@react-native-async-storage/async-storage').default;
+  storage = { getItem: AsyncStorage.getItem, setItem: AsyncStorage.setItem };
+}
+```
+
+**Why?** AsyncStorage doesn't work on web. Storybook works fine without it (just won't persist state between refreshes).
+
+### **4. Story Discovery**
 
 Stories are discovered via `storybook.requires.ts` (auto-generated):
 

@@ -145,8 +145,16 @@ The project includes comprehensive stories for all `testing-twigs` components:
 This setup includes the following on-device addons:
 
 - **Controls** - Interact with component props in real-time
-- **Actions** - Log component events and callbacks
-- **Notes** - Add documentation to your stories
+
+### Platform Support
+
+Storybook works on:
+
+- ✅ **iOS** - Full support with AsyncStorage persistence
+- ✅ **Android** - Full support with AsyncStorage persistence
+- ✅ **Web** - Full support (no persistence, refreshes reset state)
+
+> **Note:** AsyncStorage is only loaded on native platforms. On web, Storybook works perfectly but won't persist your selected story between page refreshes.
 
 ### Configuration
 

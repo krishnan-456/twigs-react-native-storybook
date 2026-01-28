@@ -77,6 +77,15 @@ Global configuration is in `.rnstorybook/preview.tsx`:
 - `BottomSheetModalProvider` and `GestureHandlerRootView` are configured
 - No need to add these in individual stories
 
+## Platform Support
+
+The setup works on:
+- ✅ iOS (native)
+- ✅ Android (native)
+- ✅ Web (Expo Web)
+
+AsyncStorage is conditionally loaded (native only), so Storybook works on all platforms.
+
 ## Story Best Practices
 
 ### DO:
