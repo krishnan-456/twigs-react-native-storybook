@@ -1,0 +1,65 @@
+{
+  // These tasks will run in order when initializing your CodeSandbox project.
+  "setupTasks": [
+    {
+      "name": "Installing Dependencies",
+      "command": "npm install"
+    }
+  ],
+
+  // These tasks can be run from CodeSandbox. Running one will open a log in the app.
+  "tasks": {
+    "start": {
+      "name": "start",
+      "command": "npm run web",
+      "runAtStart": true,
+      "preview": {
+        "port": 8081
+      }
+    },
+    "android": {
+      "name": "android",
+      "command": "npm run android"
+    },
+    "ios": {
+      "name": "ios",
+      "command": "npm run ios"
+    },
+    "web": {
+      "name": "web",
+      "command": "npm run web"
+    },
+    "lint": {
+      "name": "lint",
+      "command": "npm run lint"
+    },
+    "lint:fix": {
+      "name": "lint:fix",
+      "command": "npm run lint:fix"
+    },
+    "format": {
+      "name": "format",
+      "command": "npm run format"
+    },
+    "format:check": {
+      "name": "format:check",
+      "command": "npm run format:check"
+    },
+    "type-check": {
+      "name": "type-check",
+      "command": "npm run type-check"
+    },
+    "storybook:update": {
+      "name": "storybook:update",
+      "command": "npm run storybook:update"
+    },
+    "postinstall": {
+      "name": "postinstall",
+      "command": "npm run postinstall"
+    },
+    "prepare": {
+      "name": "prepare",
+      "command": "npm run prepare"
+    }
+  }
+}
