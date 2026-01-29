@@ -80,11 +80,14 @@ Global configuration is in `.rnstorybook/preview.tsx`:
 ## Platform Support
 
 The setup works on:
-- ✅ iOS (native)
-- ✅ Android (native)
-- ✅ Web (Expo Web)
+- ✅ iOS (native) - with AsyncStorage persistence
+- ✅ Android (native) - with AsyncStorage persistence
+- ✅ Web (Expo Web) - with in-memory mock storage (no persistence)
 
-AsyncStorage is conditionally loaded (native only), so Storybook works on all platforms.
+**Storage Implementation:**
+- **Native**: Real AsyncStorage with persistence
+- **Web**: In-memory mock to prevent `Cannot read properties of undefined` errors
+- See `.rnstorybook/index.tsx` for implementation details
 
 ## Story Best Practices
 

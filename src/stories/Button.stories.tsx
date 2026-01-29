@@ -41,69 +41,98 @@ export default ButtonMeta;
 type Story = StoryObj<typeof Button>;
 
 export const Default: Story = {
-  args: {
-    children: 'Button',
-  },
+  render: (args) => (
+    <Flex align="center" justify="center" style={styles.container}>
+      <Button {...args} style={{ maxWidth: 300 }}>
+        {args.children}
+      </Button>
+    </Flex>
+  ),
 };
 
 export const Variants: Story = {
   render: () => (
-    <Flex style={styles.showcase}>
-      <Button variant="solid" color="primary">
-        Solid
-      </Button>
-      <Button variant="outline" color="primary">
-        Outline
-      </Button>
-      <Button variant="ghost" color="primary">
-        Ghost
-      </Button>
+    <Flex align="center" justify="center" style={styles.container}>
+      <Flex style={styles.showcase}>
+        <Button variant="solid" color="primary" style={styles.button}>
+          Solid
+        </Button>
+        <Button variant="outline" color="primary" style={styles.button}>
+          Outline
+        </Button>
+        <Button variant="ghost" color="primary" style={styles.button}>
+          Ghost
+        </Button>
+      </Flex>
     </Flex>
   ),
 };
 
 export const Colors: Story = {
   render: () => (
-    <Flex style={styles.showcase}>
-      <Button color="primary">Primary</Button>
-      <Button color="secondary">Secondary</Button>
-      <Button color="negative">Negative</Button>
+    <Flex align="center" justify="center" style={styles.container}>
+      <Flex style={styles.showcase}>
+        <Button color="primary" style={styles.button}>
+          Primary
+        </Button>
+        <Button color="secondary" style={styles.button}>
+          Secondary
+        </Button>
+        <Button color="negative" style={styles.button}>
+          Negative
+        </Button>
+      </Flex>
     </Flex>
   ),
 };
 
 export const Sizes: Story = {
   render: () => (
-    <Flex style={styles.showcase}>
-      <Button size="sm" color="primary">
-        Small
-      </Button>
-      <Button size="md" color="primary">
-        Medium
-      </Button>
-      <Button size="lg" color="primary">
-        Large
-      </Button>
+    <Flex align="center" justify="center" style={styles.container}>
+      <Flex style={styles.showcase}>
+        <Button size="sm" color="primary" style={styles.button}>
+          Small
+        </Button>
+        <Button size="md" color="primary" style={styles.button}>
+          Medium
+        </Button>
+        <Button size="lg" color="primary" style={styles.button}>
+          Large
+        </Button>
+      </Flex>
     </Flex>
   ),
 };
 
 export const States: Story = {
   render: () => (
-    <Flex style={styles.showcase}>
-      <Button color="primary">Normal</Button>
-      <Button color="primary" disabled>
-        Disabled
-      </Button>
-      <Button color="primary" loading>
-        Loading
-      </Button>
+    <Flex align="center" justify="center" style={styles.container}>
+      <Flex style={styles.showcase}>
+        <Button color="primary" style={styles.button}>
+          Normal
+        </Button>
+        <Button color="primary" disabled style={styles.button}>
+          Disabled
+        </Button>
+        <Button color="primary" loading style={styles.button}>
+          Loading
+        </Button>
+      </Flex>
     </Flex>
   ),
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+  },
   showcase: {
     gap: 12,
+    width: '100%',
+    maxWidth: 300,
+  },
+  button: {
+    maxWidth: 300,
   },
 });

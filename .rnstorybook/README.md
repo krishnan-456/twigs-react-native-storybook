@@ -39,6 +39,24 @@ The `postinstall` script automatically runs this after `npm install`.
 ## Platform Support
 
 - **iOS/Android**: Full support with AsyncStorage persistence
-- **Web**: Full support (no persistence, resets on refresh)
+- **Web**: Full support with in-memory mock storage (resets on refresh)
 
-AsyncStorage is conditionally loaded in `index.tsx` to avoid web errors.
+### Storage Implementation
+
+`index.tsx` provides platform-specific storage:
+
+```typescript
+if (Platform.OS !== 'web') {
+  // Native: Real AsyncStorage with persistence
+  storage = { getItem: AsyncStorage.getItem, setItem: AsyncStorage.setItem };
+} else {
+  // Web: In-memory mock (prevents "Cannot read properties of undefined" errors)
+  const memoryStorage = {};
+  storage = {
+    getItem: async (key) => memoryStorage[key] || null,
+    setItem: async (key, value) => {
+      memoryStorage[key] = value;
+    },
+  };
+}
+```

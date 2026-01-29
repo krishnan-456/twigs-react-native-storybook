@@ -14,6 +14,21 @@ import type { BottomSheetModal as GorhomBottomSheetModal } from '@gorhom/bottom-
 const BottomSheetModalMeta: Meta<typeof BottomSheetModal> = {
   title: 'Components/BottomSheetModal',
   component: BottomSheetModal,
+  argTypes: {
+    title: {
+      control: { type: 'text' },
+    },
+    enablePanDownToClose: {
+      control: { type: 'boolean' },
+    },
+    enableDismissOnClose: {
+      control: { type: 'boolean' },
+    },
+  },
+  args: {
+    enablePanDownToClose: true,
+    enableDismissOnClose: true,
+  },
 };
 
 export default BottomSheetModalMeta;

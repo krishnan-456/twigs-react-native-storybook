@@ -7,6 +7,21 @@ import type GorhomBottomSheet from '@gorhom/bottom-sheet';
 const BottomSheetMeta: Meta<typeof BottomSheet> = {
   title: 'Components/BottomSheet',
   component: BottomSheet,
+  argTypes: {
+    title: {
+      control: { type: 'text' },
+    },
+    enablePanDownToClose: {
+      control: { type: 'boolean' },
+    },
+    index: {
+      control: { type: 'number', min: -1, max: 3, step: 1 },
+    },
+  },
+  args: {
+    enablePanDownToClose: true,
+    index: -1,
+  },
 };
 
 export default BottomSheetMeta;

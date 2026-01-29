@@ -49,8 +49,6 @@ This project includes an on-device Storybook setup for developing and testing `t
 
 3. **Tap the "Open Storybook" button** on the home screen
 
-   The button is only visible in development builds (`__DEV__ === true`) and will not appear in production.
-
 4. **Browse and interact with stories** using the Storybook UI
 
 5. **Return to the app** by tapping the "← Back to App" button at the top of the Storybook screen
@@ -152,9 +150,9 @@ Storybook works on:
 
 - ✅ **iOS** - Full support with AsyncStorage persistence
 - ✅ **Android** - Full support with AsyncStorage persistence
-- ✅ **Web** - Full support (no persistence, refreshes reset state)
+- ✅ **Web** - Full support with in-memory mock storage (refreshes reset state)
 
-> **Note:** AsyncStorage is only loaded on native platforms. On web, Storybook works perfectly but won't persist your selected story between page refreshes.
+> **Note:** On native platforms, Storybook uses real AsyncStorage for persistence. On web, it uses an in-memory mock to prevent errors, but state won't persist between page refreshes.
 
 ### Configuration
 

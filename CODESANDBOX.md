@@ -23,10 +23,10 @@ Storybook is loaded **at runtime** in `app/_layout.tsx`, not via Metro config:
 
 ```typescript
 // app/_layout.tsx
-const StorybookUIRoot = __DEV__ ? require("../.rnstorybook").default : null;
+const StorybookUIRoot = require("../.rnstorybook").default;
 
 // Toggle between app and Storybook
-if (__DEV__ && showStorybook && StorybookUIRoot) {
+if (showStorybook && StorybookUIRoot) {
   return <StorybookUIRoot />;
 }
 ```
@@ -38,15 +38,24 @@ if (__DEV__ && showStorybook && StorybookUIRoot) {
 AsyncStorage is conditionally loaded in `.rnstorybook/index.tsx`:
 
 ```typescript
-// Only load AsyncStorage on native platforms (not web)
 let storage;
 if (Platform.OS !== 'web') {
+  // Native: Use real AsyncStorage with persistence
   const AsyncStorage = require('@react-native-async-storage/async-storage').default;
   storage = { getItem: AsyncStorage.getItem, setItem: AsyncStorage.setItem };
+} else {
+  // Web: Use in-memory mock to prevent errors
+  const memoryStorage: Record<string, string> = {};
+  storage = {
+    getItem: async (key: string) => memoryStorage[key] || null,
+    setItem: async (key: string, value: string) => {
+      memoryStorage[key] = value;
+    },
+  };
 }
 ```
 
-**Why?** AsyncStorage doesn't work on web. Storybook works fine without it (just won't persist state between refreshes).
+**Why?** AsyncStorage doesn't work on web. We provide a mock in-memory storage to prevent `Cannot read properties of undefined` errors. State won't persist between refreshes on web.
 
 ### **4. Story Discovery**
 

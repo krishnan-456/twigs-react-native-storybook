@@ -31,9 +31,7 @@ export function useStorybookToggle(): StorybookContextType {
     return {
       showStorybook: false,
       setShowStorybook: () => {
-        if (__DEV__) {
-          console.warn('useStorybookToggle must be used within StorybookProvider');
-        }
+        console.warn('useStorybookToggle must be used within StorybookProvider');
       },
     };
   }

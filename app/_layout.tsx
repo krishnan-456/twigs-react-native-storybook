@@ -1,6 +1,6 @@
 import { Stack } from 'expo-router';
-import { StyleSheet, TouchableOpacity, Platform } from 'react-native';
-import { Flex, Text, TwigsProvider, defaultTheme, BottomSheetModalProvider } from 'testing-twigs';
+import { StyleSheet } from 'react-native';
+import { Flex, TwigsProvider, defaultTheme, BottomSheetModalProvider } from 'testing-twigs';
 import { StorybookProvider, useStorybookToggle } from '@/lib/StorybookContext';
 import {
   useFonts,
@@ -18,10 +18,10 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 SplashScreen.preventAutoHideAsync();
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const StorybookUIRoot = __DEV__ ? require('../.rnstorybook').default : null;
+const StorybookUIRoot = require('../.rnstorybook').default;
 
 function RootLayoutContent() {
-  const { showStorybook, setShowStorybook } = useStorybookToggle();
+  const { showStorybook } = useStorybookToggle();
 
   const [fontsLoaded] = useFonts({
     DMSans_400Regular,
@@ -42,19 +42,9 @@ function RootLayoutContent() {
     return null;
   }
 
-  if (__DEV__ && showStorybook && StorybookUIRoot) {
+  if (showStorybook && StorybookUIRoot) {
     return (
       <Flex style={styles.storybookContainer}>
-        <Flex style={styles.storybookHeader}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => setShowStorybook(false)}
-            accessibilityLabel="Back to App"
-            accessibilityRole="button"
-          >
-            <Text style={styles.backButtonText}>← Back to App</Text>
-          </TouchableOpacity>
-        </Flex>
         <StorybookUIRoot />
       </Flex>
     );
@@ -77,25 +67,13 @@ export default function RootLayout() {
     },
   };
 
-  if (__DEV__) {
-    return (
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <TwigsProvider theme={theme}>
-          <BottomSheetModalProvider>
-            <StorybookProvider>
-              <RootLayoutContent />
-            </StorybookProvider>
-          </BottomSheetModalProvider>
-        </TwigsProvider>
-      </GestureHandlerRootView>
-    );
-  }
-
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <TwigsProvider theme={theme}>
         <BottomSheetModalProvider>
-          <Stack screenOptions={{ headerShown: false }} />
+          <StorybookProvider>
+            <RootLayoutContent />
+          </StorybookProvider>
         </BottomSheetModalProvider>
       </TwigsProvider>
     </GestureHandlerRootView>
@@ -106,33 +84,5 @@ const styles = StyleSheet.create({
   storybookContainer: {
     flex: 1,
     backgroundColor: '#fff',
-  },
-  storybookHeader: {
-    paddingTop: Platform.select({ ios: 50, android: 40 }),
-    paddingHorizontal: 16,
-    paddingBottom: 12,
-    backgroundColor: '#f5f5f5',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#e0e0e0',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 2,
-      },
-    }),
-  },
-  backButton: {
-    padding: 8,
-    alignSelf: 'flex-start',
-  },
-  backButtonText: {
-    fontSize: 16,
-    color: '#007AFF',
-    fontWeight: '600',
   },
 });
